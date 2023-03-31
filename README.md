@@ -12,8 +12,10 @@
 
 ### 4. Copy the icd10.json.gz in the icd-cm repository to the source folder of this project
 
-### 4. Run the script
+### 5. Run the script
 
 ```bash
 python3 update_icd10cm.py
 ```
+
+### Step 6. Copy the icd10_new.json.gz to the icd-cm repository rename it to icd10.json.gz and replace the old one

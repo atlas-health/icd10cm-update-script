@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+icd10_new.json
+icd10_new.json.gz
+icd10.json.gz
+new_codes.csv
+*.txt
+
 # C extensions
 *.so
 

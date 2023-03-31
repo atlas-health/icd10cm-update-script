@@ -47,12 +47,20 @@ def count_keys():
     print(counter)
 
 
+def zip_file():
+    with open("icd10_new.json", "rb") as f_in:
+        with gzip.open("icd10_new.json.gz", "wb") as f_out:
+            f_out.writelines(f_in)
+
+
 def main():
     # count_keys()
     print("Converting csv to json")
     convert_csv()
     print("Comparing and filling... This may take a while.")
     compare_and_fill()
+    print("Zipping file")
+    zip_file()
 
 
 main()
