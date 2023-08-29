@@ -30,9 +30,9 @@ def compare_and_fill():
         new_codes = json.load(json_new_codes)
         # compare new_codes with atlas_codes
         for code, values in new_codes.items():
+            # different description then update
+            description = values[1]
             if code in atlas_codes.keys():
-                # different description then update
-                description = values[1]
                 if description != atlas_codes[code][1]:
                     atlas_codes[code] = [True, description]
                 else:
