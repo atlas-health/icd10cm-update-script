@@ -62,16 +62,16 @@ def zip_file():
 
 
 def main():
-    print("Counting keys in old file")
-    count_keys(atlas_codes_gz)
-    print("Converting txt to json")
+    print("Counting keys in old file...")
+    print(f"{count_keys(atlas_codes_gz)} keys in old file")
+    print("Converting txt to json...")
     convert_json()
     print("Comparing and filling... This may take a while.")
     compare_and_fill()
-    print("Zipping file")
+    print("Zipping file...")
     zip_file()
-    print("Counting keys in new file")
-    count_keys(icd10_new_gz)
+    print("Counting keys in new file...")
+    print(f"{count_keys(icd10_new_gz)} keys in new file")
 
 
 main()
