@@ -3,43 +3,40 @@ import gzip
 import json
 import os
 
-from convert_csv import convert_csv
+from convert_json import convert_json
 
 here = os.path.dirname(os.path.abspath(__file__))
 with gzip.open(os.path.join(here, "icd10.json.gz")) as fh:
     codes = json.load(fh)
 
-new_codes_csv = os.path.join(here, "new_codes.csv")
+new_codes_json = os.path.join(here, "new_codes.json")
 
-code_copy = codes.copy()
+atlas_codes = codes.copy()
 
 
 def compare_and_fill():
-    with open(new_codes_csv) as csv_new_codes:
-        reader = csv.DictReader(csv_new_codes, delimiter=";")
-        for column in reader:
-            action = column["Action"]
-            code = column["Code"]
-            description = column["Description"]
-            for key, value in code_copy.items():
-                if action == "Delete":
+    with open(new_codes_json) as json_new_codes:
+        new_codes = json.load(json_new_codes)
+        # compare new_codes with atlas_codes
+        for code, description in new_codes.items():
+            if code in atlas_codes.keys():
+                # different description then update
+                if description != atlas_codes[code][1]:
+                    atlas_codes[code] = [True, description]
+                else:
                     # do nothing
                     pass
-                elif action == "Add":
-                    codes[code] = [True, description]
-                elif action == "Revise from":
-                    if code == key:
-                        codes.pop(key)
-                elif action == "Revise to":
-                    codes[code] = [True, description]
+            else:
+                # add new code
+                atlas_codes[code] = [True, description]
     with open("icd10_new.json", "w") as fh:
-        json.dump(codes, fh)
+        json.dump(atlas_codes, fh)
 
 
 # count keys in icd10_new.json
-def count_keys():
+def count_keys(filename: str):
     counter = 0
-    with gzip.open(os.path.join(here, "icd10.json.gz")) as fh:
+    with gzip.open(os.path.join(here, filename)) as fh:
         codes = json.load(fh)
 
     for key in codes.keys():
@@ -54,13 +51,16 @@ def zip_file():
 
 
 def main():
-    # count_keys()
-    print("Converting csv to json")
-    convert_csv()
+    print("Counting keys in old file")
+    count_keys("icd10.json.gz")
+    print("Converting txt to json")
+    convert_json()
     print("Comparing and filling... This may take a while.")
     compare_and_fill()
     print("Zipping file")
     zip_file()
+    print("Counting keys in new file")
+    count_keys("icd10_new.json.gz")
 
 
 main()
