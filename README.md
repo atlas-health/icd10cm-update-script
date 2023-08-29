@@ -6,7 +6,7 @@
 > You will probably need to download all the options in order to get the one you need.
 
 ### 2. Search for the file
-> The file name will looks like this: `icd10cm_codes_addenda_2023.txt`
+> The file name will looks like this: `icd10cm_codes_2024.txt`
 
 ### 3. Copy the file to the source folder of this project
 
