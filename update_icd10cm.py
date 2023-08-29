@@ -29,9 +29,10 @@ def compare_and_fill():
     with open(new_codes_json) as json_new_codes:
         new_codes = json.load(json_new_codes)
         # compare new_codes with atlas_codes
-        for code, description in new_codes.items():
+        for code, values in new_codes.items():
             if code in atlas_codes.keys():
                 # different description then update
+                description = values[1]
                 if description != atlas_codes[code][1]:
                     atlas_codes[code] = [True, description]
                 else:
@@ -70,7 +71,7 @@ def main():
     print("Zipping file")
     zip_file()
     print("Counting keys in new file")
-    count_keys(icd10_new.json.gz)
+    count_keys(icd10_new_gz)
 
 
 main()
