@@ -8,7 +8,7 @@ icd10_new.json.gz
 icd10.json.gz
 new_codes.csv
 *.txt
-
+.DS_Store
 # C extensions
 *.so
 
