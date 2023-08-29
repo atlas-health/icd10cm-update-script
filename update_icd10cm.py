@@ -52,7 +52,7 @@ def count_keys(filename: str):
 
     for key in codes.keys():
         counter += 1
-    print(counter)
+    return counter
 
 
 def zip_file():
