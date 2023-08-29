@@ -3,64 +3,75 @@ import gzip
 import json
 import os
 
-from convert_csv import convert_csv
+from convert_json import convert_json
+
+# EXISTING FILES PATHS
+atlas_codes_gz = './files/icd10.json.gz'
+new_codes_json = './files/new_codes.json'
+
+
+# GENERATED FILES PATHS
+icd10_new_json = './files/icd10_new.json'
+icd10_new_gz = './files/icd10_new.json.gz'
+
+
 
 here = os.path.dirname(os.path.abspath(__file__))
-with gzip.open(os.path.join(here, "icd10.json.gz")) as fh:
+with gzip.open(os.path.join(here, atlas_codes_gz)) as fh:
     codes = json.load(fh)
 
-new_codes_csv = os.path.join(here, "new_codes.csv")
 
-code_copy = codes.copy()
+new_codes_json = os.path.join(here, new_codes_json)
+atlas_codes = codes.copy()
 
 
 def compare_and_fill():
-    with open(new_codes_csv) as csv_new_codes:
-        reader = csv.DictReader(csv_new_codes, delimiter=";")
-        for column in reader:
-            action = column["Action"]
-            code = column["Code"]
-            description = column["Description"]
-            for key, value in code_copy.items():
-                if action == "Delete":
+    with open(new_codes_json) as json_new_codes:
+        new_codes = json.load(json_new_codes)
+        # compare new_codes with atlas_codes
+        for code, values in new_codes.items():
+            # different description then update
+            description = values[1]
+            if code in atlas_codes.keys():
+                if description != atlas_codes[code][1]:
+                    atlas_codes[code] = [True, description]
+                else:
                     # do nothing
                     pass
-                elif action == "Add":
-                    codes[code] = [True, description]
-                elif action == "Revise from":
-                    if code == key:
-                        codes.pop(key)
-                elif action == "Revise to":
-                    codes[code] = [True, description]
-    with open("icd10_new.json", "w") as fh:
-        json.dump(codes, fh)
+            else:
+                # add new code
+                atlas_codes[code] = [True, description]
+    with open(icd10_new_json, "w") as fh:
+        json.dump(atlas_codes, fh)
 
 
-# count keys in icd10_new.json
-def count_keys():
+def count_keys(filename: str):
     counter = 0
-    with gzip.open(os.path.join(here, "icd10.json.gz")) as fh:
+    with gzip.open(os.path.join(here, filename)) as fh:
         codes = json.load(fh)
 
     for key in codes.keys():
         counter += 1
-    print(counter)
+    return counter
 
 
 def zip_file():
-    with open("icd10_new.json", "rb") as f_in:
-        with gzip.open("icd10_new.json.gz", "wb") as f_out:
+    with open(icd10_new_json, "rb") as f_in:
+        with gzip.open(icd10_new_gz, "wb") as f_out:
             f_out.writelines(f_in)
 
 
 def main():
-    # count_keys()
-    print("Converting csv to json")
-    convert_csv()
+    print("Counting keys in old file...")
+    print(f"{count_keys(atlas_codes_gz)} keys in old file")
+    print("Converting txt to json...")
+    convert_json()
     print("Comparing and filling... This may take a while.")
     compare_and_fill()
-    print("Zipping file")
+    print("Zipping file...")
     zip_file()
+    print("Counting keys in new file...")
+    print(f"{count_keys(icd10_new_gz)} keys in new file")
 
 
 main()
