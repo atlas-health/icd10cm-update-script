@@ -1,7 +1,7 @@
 import json
 
 # define the input and output files
-input_file = "./files/icd10cm_codes_2024.txt"
+input_file = "./files/icd10cm_codes_2025.txt"
 output_file = "./files/new_codes.json"
 def convert_json():
     # open the input and output files
